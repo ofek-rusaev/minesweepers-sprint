@@ -10,7 +10,6 @@ function createMat(ROWS, COLS) {
   return mat
 }
 
-
 function getRandomColor() {
   var letters = '0123456789ABCDEF'.split('');
   var color = '#';
@@ -43,11 +42,13 @@ function printMat(mat, selector) {
 }
 
 function renderCell(i, j, value) {
-  var cellSelector = `.cell ${i}-${j}`;
-  console.log('got selector:', cellSelector);
+  var cellSelector = getSelector(i, j);
+  // var cellSelector = `.cell-${i}-${j}`;
   var elCell = document.querySelector(cellSelector);
-  console.log('el cell', elCell)
-  console.log(elCell.innerText)
+  // var elCell = document.getElementsByClassName(cellSelector);
   elCell.innerText = value;
-  // elCell.innerHTML = value;
+}
+
+function getSelector(i, j) {
+  return `#cell-${i}-${j}`;
 }

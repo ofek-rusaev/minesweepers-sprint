@@ -4,7 +4,9 @@ var gLevel = {
     SIZE: 4,
     MINES: 2
 }
-var WALL = '⬜';
+var SMILEY = '😀';
+var SMILEY_LOSE = '😕';
+var SMILEY_WIN = '😎';
 var MINE = '💣';
 var EMPTY = ' ';
 var FLAG = '🚩';
@@ -14,35 +16,34 @@ var gGame = {
     markedCount: 0
 }
 var gBoard;
-var gInterval;
+var gTimerInterval;
 
-/*
-Functions TO-DO:
-++ cellMarked(elCell)  - Called on right click to mark a cell (suspected to be a mine) Search the web (and implement) how to hide the context menu on right click.
-*/
-
-
-
-// window.oncontextmenu = function () {
-    //     alert('Right Click')
-    // }
+var gClicksCount = 0; // recognizes first click and starts game.
+var gHintsCount = 3;
+var isHintOn = false;
 
 function init() {
     gBoard = createBoard();
     renderBoard();
 }
 
-// adding mines on first click
+// adding mines after & timer first click
 function startGame() {
+    gClicksCount++;
     gGame.isOn = true;
     addMines();
+    // if (gBoard[i][j].isMine) // startGame(i, j);
+    // renderBoard();
     getTime();
 }
 
 // resets game based on player level choice
 function resetGame(size, mines) {
+    getSmileyBtn(SMILEY);
+    gClicksCount = 0;
     gLevel.SIZE = size;
     gLevel.MINES = mines;
+    clearInterval(gTimerInterval);
     init();
 }
 
@@ -65,29 +66,24 @@ function createBoard() {
 
 // Render the board as a <table> to the page 
 function renderBoard() {
-    var strHTML = '<table border="0"><tbody>';
+    var strHTML = '<table border="0" class="table"><tbody>';
     for (var i = 0; i < gBoard.length; i++) {
         strHTML += '<tr>';
         for (var j = 0; j < gBoard[0].length; j++) {
-            var cell = WALL;
-            var className = `cell ${i}-${j}`;
-            strHTML += `<td class="${className}" onclick="cellClicked(this, ${i}, ${j})" oncontextmenu="flagCell()" > ${cell} </td>`
+            var cell = EMPTY;
+            var className = ``;
+            var tdId = `cell-${i}-${j}`;
+            strHTML += `<td id="${tdId}" class="${className}" onclick="cellClicked(this, ${i}, ${j})" oncontextmenu="cellMarked(this, ${i}, ${j})" > ${cell} </td>`
         }
         strHTML += '</tr>'
     }
     strHTML += '</tbody></table>';
     var elContainer = document.querySelector('.board');
     elContainer.innerHTML = strHTML;
-    console.log(elContainer.innerHTML);
+    // console.log(elContainer.innerHTML);
 }
 
-el.addEventListener('contextmenu', function flagCell(ev) {
-    ev.preventDefault();
-    console.log(el);
-    return false;
-}, false);
-
-// adding mines based on level
+// adding mines and activate negs count
 function addMines() {
     for (var i = 0; i < gLevel.MINES; i++) {
         setRandMine();
@@ -105,6 +101,11 @@ function setRandMine() {
     var iIdx = getRandomInt(0, gLevel.SIZE - 1);
     var jIdx = getRandomInt(0, gLevel.SIZE - 1);
     gBoard[iIdx][jIdx].isMine = true;
+    // adding "mine" classList:
+    var mineCellSelector = getSelector(iIdx, jIdx);
+    var elCell = document.querySelector(mineCellSelector);
+    elCell.classList.add('mine');
+
 }
 
 function countNegMines(board, posI, posJ) {
@@ -120,20 +121,15 @@ function countNegMines(board, posI, posJ) {
     return negsMinesCount;
 }
 
-// // disable menu on right click
-// if (document.addEventListener) {
-//     document.addEventListener('contextmenu', function (e) {
-//         e.preventDefault();
-//     }, false);
-// } else {
-//     document.attachEvent('oncontextmenu', function () {
-//         window.event.returnValue = false;
-//     });
-// }
+// captures smiley element
+function getSmileyBtn(newValue) {
+    var elSmileyBtn = document.getElementsByClassName('smiley')
+    elSmileyBtn[0].innerText = newValue;
+}
 
 function getTime() {
     startTime = new Date().getTime();
-    gInterval = setInterval(timer, 2, startTime);
+    gTimerInterval = setInterval(timer, 2, startTime);
 }
 
 function timer() {

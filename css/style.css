@@ -1,5 +1,6 @@
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: lightgray;
 }
 button {
     padding: 5px;
@@ -9,9 +10,14 @@ button {
 }
 
 .board td {
-    width: 50px;
-    height: 50px;
+    width: 25px;
+    height: 25px;
     text-align: center;
+}
+.table {
+    margin-left: auto;
+    margin-right: auto;
+
 }
 
 .clock {
@@ -20,4 +26,14 @@ button {
     margin: 15px;
     width: 50px;
     text-align: center;
+}
+
+.mark {
+    background-color: rgb(252, 46, 77);
+    color: red;
+}
+
+.hint {
+    background-color: rgb(149, 255, 149);
+
 }
