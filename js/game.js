@@ -7,16 +7,9 @@ function cellClicked(elCell, i, j) {
     // on hint mode:
     if (isHintOn) {
         showHint(elCell, i, j);
-        // setHintOn(true);
-        // console.log('is hint on: ', isHintOn);
-        // setTimeout(function () {
-        //     console.log('inside set time out', elCell.innerText);
-        //     setHintOn(elCell, i, j)
-        // }, 4000);
-        isHintOn = false;
-        // setTimeout(setHintOn, 3000, false);
+        return;
     }
-    if (gBoard[i][j].isMine) {
+    if (gBoard[i][j].isMine && !isHintOn) {
         getSmileyBtn(SMILEY_LOSE);
         revelAllMines();
         gameOver();
@@ -31,27 +24,60 @@ function cellClicked(elCell, i, j) {
     checkWin();
 }
 
+// on "hint" click:
 function setHintOn() {
+    if (gHintsCount === 0) return;
     isHintOn = true;
-    // showHint();
-    // console.log('in hint');
     var elContainer = document.querySelector('.board');
+    gHintsCount--;
     elContainer.classList.add('hint');
     document.querySelector('button span').innerText = gHintsCount;
 }
 
+// if hint mode is on - will revel chosen section on board for 1 sec:
 function showHint(elCell, i, j) {
     var cellValue = gBoard[i][j].negsMinesCount;
-    elCell.innerHTML = cellValue;
+    elCell.innerText = cellValue;
     renderCell(i, j, cellValue);
-    expandShown(gBoard, i, j)
-    // gHintsCount--;
-    // elContainer.classList.remove('hint');
+    revelHintNegs(gBoard, i, j);
+    setTimeout(function () {
+        elCell.innerText = EMPTY;
+        renderCell(i, j, EMPTY);
+        hideHintNegs(gBoard, i, j);
+        var elContainer = document.querySelector('.board');
+        elContainer.classList.remove('hint');
+        isHintOn = false;
+    }, 1000);
 }
 
-function hideHint(elCell, i, j) {
-    elCell.innerHTML = cellValue;
-    renderCell(i, j, cellValue);
+// revel for hint mode:
+function revelHintNegs(board, posI, posJ) {
+    for (var i = posI - 1; i <= posI + 1; i++) {
+        if (i < 0 || i + 1 > board.length) continue;
+        for (var j = posJ - 1; j <= posJ + 1; j++) {
+            if (j < 0 || j + 1 > board.length) continue;
+            if (i === posI && j === posJ) continue;
+            if (board[i][j].isShown) continue;
+            var negCellSelector = getSelector(i, j);
+            var elNegCell = document.querySelector(negCellSelector);
+            elNegCell.innerText = board[i][j].negsMinesCount;
+        }
+    }
+}
+
+// hide for hint mode:
+function hideHintNegs(board, posI, posJ) {
+    for (var i = posI - 1; i <= posI + 1; i++) {
+        if (i < 0 || i + 1 > board.length) continue;
+        for (var j = posJ - 1; j <= posJ + 1; j++) {
+            if (j < 0 || j + 1 > board.length) continue;
+            if (i === posI && j === posJ) continue;
+            if (board[i][j].isShown) continue;
+            var negCellSelector = getSelector(i, j);
+            var elNegCell = document.querySelector(negCellSelector);
+            elNegCell.innerText = EMPTY;
+        }
+    }
 }
 
 function checkWin() {
@@ -65,7 +91,6 @@ function checkWin() {
     }
 }
 
-// show cell's negs:
 function countNegs(posI, posJ) {
     var neighborsCount = 0
     for (var i = posI - 1; i <= posI + 1; i++) {
@@ -79,6 +104,7 @@ function countNegs(posI, posJ) {
     return neighborsCount
 }
 
+// show cell's negs:
 function expandShown(board, posI, posJ) {
     for (var i = posI - 1; i <= posI + 1; i++) {
         if (i < 0 || i + 1 > board.length) continue;

@@ -33,18 +33,7 @@ function init() {
 function startGame() {
     gClicksCount++;
     gGame.isOn = true;
-    // addMinesDeb(0, 1);
-    // addMinesDeb(1, 1);
-    // addMinesDeb(2, 1);
-    // addMinesDeb(2, 2);
-    // addMinesDeb(2, 3);
-    // addMinesDeb(1, 3);
-    // addMinesDeb(0, 3);
-    // addMinesDeb(3, 1);
-    // addMinesDeb(3, 3);
     addMines();
-    // if (gBoard[i][j].isMine) // startGame(i, j);
-    // renderBoard();
     getTime();
 }
 
