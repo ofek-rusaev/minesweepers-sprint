@@ -1,5 +1,3 @@
-//Learning git
-
 // Called when a cell (td) is clicked 
 function cellClicked(elCell, i, j) {
     // on first click - set random mines:
