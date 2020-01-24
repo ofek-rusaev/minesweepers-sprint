@@ -50,7 +50,7 @@ function showHint(elCell, i, j) {
     }, 1000);
 }
 
-// revel for hint mode:
+// revel cells for hint mode:
 function revelHintNegs(board, posI, posJ) {
     for (var i = posI - 1; i <= posI + 1; i++) {
         if (i < 0 || i + 1 > board.length) continue;
@@ -65,7 +65,7 @@ function revelHintNegs(board, posI, posJ) {
     }
 }
 
-// hide for hint mode:
+// hide cells after hint mode:
 function hideHintNegs(board, posI, posJ) {
     for (var i = posI - 1; i <= posI + 1; i++) {
         if (i < 0 || i + 1 > board.length) continue;
@@ -78,30 +78,6 @@ function hideHintNegs(board, posI, posJ) {
             elNegCell.innerText = EMPTY;
         }
     }
-}
-
-function checkWin() {
-    if (gGame.shownCount === gLevel.SIZE * gLevel.SIZE - gLevel.MINES
-        && gGame.markedCount === gLevel.MINES) {
-        getSmileyBtn(SMILEY_WIN);
-        gameOver();
-        return true;
-    } else {
-        return false;
-    }
-}
-
-function countNegs(posI, posJ) {
-    var neighborsCount = 0
-    for (var i = posI - 1; i <= posI + 1; i++) {
-        if (i < 0 || i >= gBoard.length) continue;
-        for (var j = posJ - 1; j <= posJ + 1; j++) {
-            if (j < 0 || j >= gBoard.length) continue;
-            if (i === posI && j === posJ) continue;
-            if (gBoard[i][j] === LIFE || gBoard[i][j] === SUPER_LIFE) neighborsCount++
-        }
-    }
-    return neighborsCount
 }
 
 // show cell's negs:
@@ -117,9 +93,25 @@ function expandShown(board, posI, posJ) {
             var elNegCell = document.querySelector(negCellSelector);
             elNegCell.innerText = board[i][j].negsMinesCount;
             gGame.shownCount++;
+            if (gBoard[i][j].negsMinesCount === 0) expandShown(board, i, j); 
         }
     }
 }
+// function expandShown(board, posI, posJ) {
+//     for (var i = posI - 1; i <= posI + 1; i++) {
+//         if (i < 0 || i + 1 > board.length) continue;
+//         for (var j = posJ - 1; j <= posJ + 1; j++) {
+//             if (j < 0 || j + 1 > board.length) continue;
+//             if (i === posI && j === posJ) continue;
+//             if (board[i][j].isShown) continue;
+//             board[i][j].isShown = true;
+//             var negCellSelector = getSelector(i, j);
+//             var elNegCell = document.querySelector(negCellSelector);
+//             elNegCell.innerText = board[i][j].negsMinesCount;
+//             gGame.shownCount++;
+//         }
+//     }
+// }
 
 // shows all mines in red when player lost the game 
 function revelAllMines() {
@@ -134,7 +126,6 @@ function revelAllMines() {
 function cellMarked(elCell, i, j) {
     elCell.addEventListener('contextmenu', function (ev) {
         ev.preventDefault();
-        // console.log('right click ', elCell);
         var cellNegsCount = gBoard[i][j].negsMinesCount;
         if (elCell.innerText === FLAG) {
             elCell.innerText = cellNegsCount;
@@ -159,6 +150,17 @@ if (document.addEventListener) {
     document.attachEvent('oncontextmenu', function () {
         window.event.returnValue = false;
     });
+}
+
+function checkWin() {
+    if (gGame.shownCount === gLevel.SIZE * gLevel.SIZE - gLevel.MINES
+        && gGame.markedCount === gLevel.MINES) {
+        getSmileyBtn(SMILEY_WIN);
+        gameOver();
+        return true;
+    } else {
+        return false;
+    }
 }
 
 function gameOver() {

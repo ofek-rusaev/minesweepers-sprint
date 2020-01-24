@@ -1,7 +1,12 @@
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     background-color: lightgray;
+    margin: auto;
+    text-align: center;
+    /* margin-left: auto;
+    margin-right: auto; */
 }
+
 button {
     padding: 5px;
     background-color: rgb(146, 146, 146);
@@ -9,6 +14,11 @@ button {
     width: 70px;
 }
 
+.dark-mode {
+    background-color: rgb(51, 50, 50);
+    color: white;
+  }
+  
 .board td {
     width: 25px;
     height: 25px;
@@ -17,15 +27,18 @@ button {
 .table {
     margin-left: auto;
     margin-right: auto;
-
+    /* float: inline-end; */
 }
 
 .clock {
     padding: 5px;
     background-color: rgb(146, 146, 146);
-    margin: 15px;
+    margin: 10px;
     width: 50px;
     text-align: center;
+    margin: auto;
+    margin-bottom: 10px;
+    
 }
 
 .mark {
