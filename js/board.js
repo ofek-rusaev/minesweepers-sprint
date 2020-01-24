@@ -26,8 +26,7 @@ function init() {
     gGame.isOn = true;
     gBoard = createBoard();
     renderBoard();
-    gHintsCount = 3; // reset hint count & display
-    document.querySelector('button span').innerText = gHintsCount;
+
 }
 
 // adding mines after & timer first click
@@ -74,31 +73,22 @@ function renderBoard() {
             var cell = EMPTY;
             var className = ``;
             var tdId = `cell-${i}-${j}`;
-            strHTML += `<td id="${tdId}" class="${className}" onclick="cellClicked(this, ${i}, ${j})" 
-            oncontextmenu="cellMarked(this, ${i}, ${j})" > ${cell} </td>`
+            strHTML += `<td id="${tdId}" class="${className}" onclick="cellClicked(this, ${i}, ${j})" oncontextmenu="cellMarked(this, ${i}, ${j})" > ${cell} </td>`
         }
         strHTML += '</tr>'
     }
     strHTML += '</tbody></table>';
     var elContainer = document.querySelector('.board');
     elContainer.innerHTML = strHTML;
+    // console.log(elContainer.innerHTML);
 }
 
-// adding mines and activate negs count
-function addMines() {
-    for (var i = 0; i < gLevel.MINES; i++) {
-        setRandMine();
-        setMinesNegsCount()
-    }
-    // for (var i = 0; i < gLevel.SIZE; i++) {
-    //     for (var j = 0; j < gLevel.SIZE; j++) {
-    //         gBoard[i][j].negsMinesCount = countCellNegs(gBoard, i, j);
-    //         if (gBoard[i][j].isMine) gBoard[i][j].negsMinesCount = MINE;
-    //     }
-    // }
-}
 
-function setMinesNegsCount() {
+function addMinesDeb(i, j) {
+    gBoard[i][j].isMine = true;
+    var mineCellSelector = getSelector(i, j);
+    var elCell = document.querySelector(mineCellSelector);
+    elCell.classList.add('mine');
     for (var i = 0; i < gLevel.SIZE; i++) {
         for (var j = 0; j < gLevel.SIZE; j++) {
             gBoard[i][j].negsMinesCount = countCellNegs(gBoard, i, j);
@@ -106,6 +96,22 @@ function setMinesNegsCount() {
         }
     }
 }
+
+// adding mines and activate negs count
+function addMines() {
+    for (var i = 0; i < gLevel.MINES; i++) {
+        setRandMine();
+    }
+    for (var i = 0; i < gLevel.SIZE; i++) {
+        for (var j = 0; j < gLevel.SIZE; j++) {
+            gBoard[i][j].negsMinesCount = countCellNegs(gBoard, i, j);
+            if (gBoard[i][j].isMine) gBoard[i][j].negsMinesCount = MINE;
+        }
+    }
+}
+
+// function countNegMines(i, j) {
+// }
 
 function countCellNegs(board, posI, posJ) {
     var negsMinesCount = 0;
@@ -120,17 +126,39 @@ function countCellNegs(board, posI, posJ) {
     return negsMinesCount;
 }
 
+// set random mine location
+// function setRandMine(i, j) {
+//     var iIdx = getRandomInt(0, gLevel.SIZE - 1);
+//     var jIdx = getRandomInt(0, gLevel.SIZE - 1);
+//     if (i === iIdx && j === jIdx) {
+//         setRandMine(i, j);
+//     } else {
+//         gBoard[iIdx][jIdx].isMine = true;
+//         var mineCellSelector = getSelector(iIdx, jIdx);
+//         var elCell = document.querySelector(mineCellSelector);
+//         // adding "mine" classList:
+//         elCell.classList.add('mine');
+//     }
+// }
+
 function setRandMine(i, j) {
     var iIdx = getRandomInt(0, gLevel.SIZE - 1);
     var jIdx = getRandomInt(0, gLevel.SIZE - 1);
-    if (i === iIdx && j === jIdx) setRandMine(i, j);
+    while (i === iIdx && j === jIdx) {
+        setRandMine(i, j);
+    }
     gBoard[iIdx][jIdx].isMine = true;
-
-    // adding "mine" classList:
     var mineCellSelector = getSelector(iIdx, jIdx);
     var elCell = document.querySelector(mineCellSelector);
+    // adding "mine" classList:
     elCell.classList.add('mine');
 }
+
+
+
+
+
+
 
 // captures smiley element
 function getSmileyBtn(newValue) {
@@ -150,12 +178,3 @@ function timer() {
     var seconds = diff / 1000;
     elClock.innerText = seconds.toFixed(0);
 }
-
-// function darkMode(elBtn) {
-//     var element = document.body;
-//     element.classList.toggle("dark-mode");
-//     // var elBtn = querySelector('.mode');
-//     console.log(elBtn)
-//     if (elBtn.innerText === "Dark Mode") elBtn.innerText = "Light Mode";
-//     if (elBtn.innerText === "Light Mode") elBtn.innerText = "Dark Mode";
-// }
