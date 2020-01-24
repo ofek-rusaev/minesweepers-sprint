@@ -1,7 +1,8 @@
 // Called when a cell (td) is clicked 
 function cellClicked(elCell, i, j) {
     // on first click - set random mines:
-    if (gClicksCount === 0) startGame(i, j);
+    if (!gGame.isOn) return;
+    if (gClicksCount === 0) startGame();
     if (elCell.innerText === FLAG) return;
     // on hint mode:
     if (isHintOn) {
@@ -18,11 +19,11 @@ function cellClicked(elCell, i, j) {
     if (gBoard[i][j].isMine) {
         getSmileyBtn(SMILEY_LOSE);
         revelAllMines();
-        setTimeout(gameOver, 3000);
+        gameOver();
     }
-    // if (gBoard[i][j].isShown) return;
+    if (gBoard[i][j].isShown) return;
     gBoard[i][j].isShown = true;
-    gGame.shownCount++;
+    if (!gBoard[i][j].isMine) gGame.shownCount++;
     var cellValue = gBoard[i][j].negsMinesCount;
     elCell.innerHTML = cellValue;
     if (gBoard[i][j].negsMinesCount < 1) expandShown(gBoard, i, j);
@@ -54,19 +55,14 @@ function hideHint(elCell, i, j) {
 }
 
 function checkWin() {
-    if (gGame.markedCount !== gLevel.MINES) return false;
-    for (var i = 0; i < gBoard.length; i++) {
-        var cell = gBoard[i];
-        if (!cell.isMine) {
-            if (!cell.isShown) return false;
-        }
+    if (gGame.shownCount === gLevel.SIZE * gLevel.SIZE - gLevel.MINES
+        && gGame.markedCount === gLevel.MINES) {
+        getSmileyBtn(SMILEY_WIN);
+        gameOver();
+        return true;
+    } else {
+        return false;
     }
-    getSmileyBtn(SMILEY_WIN);
-    gameOver();
-    return true;
-    // if (gGame.shownCount === gLevel.SIZE * gLevel.SIZE - gLevel.MINES
-    //     && gGame.markedCount === gLevel.MINES) {
-    // }
 }
 
 // show cell's negs:
@@ -84,11 +80,12 @@ function countNegs(posI, posJ) {
 }
 
 function expandShown(board, posI, posJ) {
-    for (var i = posI + 1; i >= posI - 1; i--) {
-        if (i - 1 < 0 || i + 1 > board.length) continue;
-        for (var j = posJ + 1; j >= posJ - 1; j--) {
+    for (var i = posI - 1; i <= posI + 1; i++) {
+        if (i < 0 || i + 1 > board.length) continue;
+        for (var j = posJ - 1; j <= posJ + 1; j++) {
             if (j < 0 || j + 1 > board.length) continue;
             if (i === posI && j === posJ) continue;
+            if (board[i][j].isShown) continue;
             board[i][j].isShown = true;
             var negCellSelector = getSelector(i, j);
             var elNegCell = document.querySelector(negCellSelector);
@@ -121,6 +118,7 @@ function cellMarked(elCell, i, j) {
             renderCell(i, j, FLAG);
             gBoard[i][j].isMarked = true;
             gGame.markedCount++;
+            checkWin();
         }
         return false;
     }, false);

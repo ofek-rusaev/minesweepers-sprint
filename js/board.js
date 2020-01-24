@@ -18,19 +18,30 @@ var gGame = {
 var gBoard;
 var gTimerInterval;
 
-var gClicksCount = 0; // recognizes first click and starts game.
+var gClicksCount = 0; // recognizes first click and starts game. TO DO : change to boolan value
 var gHintsCount = 3;
 var isHintOn = false;
 
 function init() {
+    gGame.isOn = true;
     gBoard = createBoard();
     renderBoard();
+
 }
 
 // adding mines after & timer first click
 function startGame() {
     gClicksCount++;
     gGame.isOn = true;
+    // addMinesDeb(0, 1);
+    // addMinesDeb(1, 1);
+    // addMinesDeb(2, 1);
+    // addMinesDeb(2, 2);
+    // addMinesDeb(2, 3);
+    // addMinesDeb(1, 3);
+    // addMinesDeb(0, 3);
+    // addMinesDeb(3, 1);
+    // addMinesDeb(3, 3);
     addMines();
     // if (gBoard[i][j].isMine) // startGame(i, j);
     // renderBoard();
@@ -83,6 +94,20 @@ function renderBoard() {
     // console.log(elContainer.innerHTML);
 }
 
+
+function addMinesDeb(i, j) {
+    gBoard[i][j].isMine = true;
+    var mineCellSelector = getSelector(i, j);
+    var elCell = document.querySelector(mineCellSelector);
+    elCell.classList.add('mine');
+    for (var i = 0; i < gLevel.SIZE; i++) {
+        for (var j = 0; j < gLevel.SIZE; j++) {
+            gBoard[i][j].negsMinesCount = countCellNegs(gBoard, i, j);
+            if (gBoard[i][j].isMine) gBoard[i][j].negsMinesCount = MINE;
+        }
+    }
+}
+
 // adding mines and activate negs count
 function addMines() {
     for (var i = 0; i < gLevel.MINES; i++) {
@@ -90,28 +115,19 @@ function addMines() {
     }
     for (var i = 0; i < gLevel.SIZE; i++) {
         for (var j = 0; j < gLevel.SIZE; j++) {
-            gBoard[i][j].negsMinesCount = countNegMines(gBoard, i, j);
+            gBoard[i][j].negsMinesCount = countCellNegs(gBoard, i, j);
             if (gBoard[i][j].isMine) gBoard[i][j].negsMinesCount = MINE;
         }
     }
 }
 
-// set random mine location
-function setRandMine() {
-    var iIdx = getRandomInt(0, gLevel.SIZE - 1);
-    var jIdx = getRandomInt(0, gLevel.SIZE - 1);
-    gBoard[iIdx][jIdx].isMine = true;
-    // adding "mine" classList:
-    var mineCellSelector = getSelector(iIdx, jIdx);
-    var elCell = document.querySelector(mineCellSelector);
-    elCell.classList.add('mine');
+// function countNegMines(i, j) {
+// }
 
-}
-
-function countNegMines(board, posI, posJ) {
+function countCellNegs(board, posI, posJ) {
     var negsMinesCount = 0;
     for (var i = posI - 1; i <= posI + 1; i++) {
-        if (i - 1 < 0 || i + 1 > board.length) continue;
+        if (i < 0 || i + 1 > board.length) continue;
         for (var j = posJ - 1; j <= posJ + 1; j++) {
             if (j < 0 || j + 1 > board.length) continue;
             if (i === posI && j === posJ) continue;
@@ -120,6 +136,40 @@ function countNegMines(board, posI, posJ) {
     }
     return negsMinesCount;
 }
+
+// set random mine location
+// function setRandMine(i, j) {
+//     var iIdx = getRandomInt(0, gLevel.SIZE - 1);
+//     var jIdx = getRandomInt(0, gLevel.SIZE - 1);
+//     if (i === iIdx && j === jIdx) {
+//         setRandMine(i, j);
+//     } else {
+//         gBoard[iIdx][jIdx].isMine = true;
+//         var mineCellSelector = getSelector(iIdx, jIdx);
+//         var elCell = document.querySelector(mineCellSelector);
+//         // adding "mine" classList:
+//         elCell.classList.add('mine');
+//     }
+// }
+
+function setRandMine(i, j) {
+    var iIdx = getRandomInt(0, gLevel.SIZE - 1);
+    var jIdx = getRandomInt(0, gLevel.SIZE - 1);
+    while (i === iIdx && j === jIdx) {
+        setRandMine(i, j);
+    }
+    gBoard[iIdx][jIdx].isMine = true;
+    var mineCellSelector = getSelector(iIdx, jIdx);
+    var elCell = document.querySelector(mineCellSelector);
+    // adding "mine" classList:
+    elCell.classList.add('mine');
+}
+
+
+
+
+
+
 
 // captures smiley element
 function getSmileyBtn(newValue) {
