@@ -1,13 +1,17 @@
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     background-color: lightgray;
+    margin: auto;
+    text-align: center;
 }
 
 button {
     padding: 5px;
     background-color: rgb(146, 146, 146);
     margin: 15px;
-    width: 70px;
+    width: 95px;
+    height: 30px;
+    text-align: center;
 }
 
 .board td {
@@ -28,6 +32,7 @@ button {
     margin: 15px;
     width: 50px;
     text-align: center;
+    margin: auto;
 }
 
 .mark {
@@ -40,7 +45,7 @@ button {
 }
 
 .open {
-    background-color: rgb(245, 241, 241);
+    background-color: rgb(218, 214, 214);
 }
 
 .one {

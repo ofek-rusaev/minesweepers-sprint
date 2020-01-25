@@ -21,6 +21,7 @@ var gTimerInterval;
 var isFirstClick = true; // recognizes first click and starts game. TO DO : change to boolan value
 var gHintsCount = 3;
 var gLivesCount = 3;
+var gSafeClicksCount = 3;
 var isHintOn = false;
 
 function init() {
@@ -31,6 +32,8 @@ function init() {
     elLivesIconUpdate();
     gHintsCount = 3;
     elHintsBtnUpdate();
+    gSafeClicksCount = 3;
+    elSafeClickBtnUpdate();
     gBoard = createBoard();
     renderBoard();
 
@@ -145,6 +148,18 @@ function setRandMine(i, j) {
     var elCell = document.querySelector(mineCellSelector);
     // adding "mine" classList:
     elCell.classList.add('mine');
+}
+
+// sets colors for numbers on board:
+function addStyleForNums(elCell, i, j) {
+    if (gBoard[i][j].negsMinesCount === 1) elCell.classList.add('one');
+    if (gBoard[i][j].negsMinesCount === 2) elCell.classList.add('two');
+    if (gBoard[i][j].negsMinesCount === 3) elCell.classList.add('three');
+    if (gBoard[i][j].negsMinesCount === 4) elCell.classList.add('four');
+    if (gBoard[i][j].negsMinesCount === 5) elCell.classList.add('five');
+    if (gBoard[i][j].negsMinesCount === 6) elCell.classList.add('six');
+    if (gBoard[i][j].negsMinesCount === 7) elCell.classList.add('seven');
+    if (gBoard[i][j].negsMinesCount === 8) elCell.classList.add('eight');
 }
 
 // captures smiley element

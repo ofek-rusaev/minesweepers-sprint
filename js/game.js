@@ -28,6 +28,7 @@ function cellClicked(elCell, i, j) {
         elCell.classList.add('open');
     }
     var cellValue = gBoard[i][j].negsMinesCount;
+    var valueForSwitch = gBoard[i][j].negsMinesCount;
     addStyleForNums(elCell, i, j);
 
     (cellValue === 0) ? elCell.innerHTML = EMPTY : elCell.innerHTML = cellValue;
@@ -50,10 +51,35 @@ function showMineHit(elCell) {
 function elLivesIconUpdate() {
     var elLives = document.querySelector('p span');
     var elStr = ''
-    for (var i = gLivesCount; i > 0 ; i--) {
+    for (var i = gLivesCount; i > 0; i--) {
         elStr += '❤';
     }
     elLives.innerText = elStr;
+}
+
+// showing random cell that is safe to open:
+function safeClick(elBtn) {
+    if (gSafeClicksCount === 0) return;
+    var iIdx = getRandomInt(0, gBoard.length);
+    var jIdx = getRandomInt(0, gBoard.length);
+    if (gBoard[iIdx][jIdx].isMine || gBoard[iIdx][jIdx].isShown) {
+        safeClick();
+    } else {
+        var cellSelector = getSelector(iIdx, jIdx);
+        var elCell = document.querySelector(cellSelector);
+        elCell.classList.add('hint');
+        gSafeClicksCount--;
+        elSafeClickBtnUpdate();
+        setTimeout(function () {
+            elCell.classList.remove('hint');
+        }, 1000);
+    }
+}
+
+// update count for safe clicks
+function elSafeClickBtnUpdate() {
+    var elBtn = document.querySelector('.safe');
+    elBtn.innerText = `Safe click (${gSafeClicksCount})`;
 }
 
 // on "hint" click:
@@ -66,6 +92,7 @@ function setHintOn() {
     elContainer.classList.add('hint');
 }
 
+// update count for hints
 function elHintsBtnUpdate() {
     document.querySelector('button span').innerText = gHintsCount;
 }
@@ -127,19 +154,6 @@ function checkWin() {
     }
 }
 
-function countNegs(posI, posJ) {
-    var neighborsCount = 0
-    for (var i = posI - 1; i <= posI + 1; i++) {
-        if (i < 0 || i >= gBoard.length) continue;
-        for (var j = posJ - 1; j <= posJ + 1; j++) {
-            if (j < 0 || j >= gBoard.length) continue;
-            if (i === posI && j === posJ) continue;
-            if (gBoard[i][j] === LIFE || gBoard[i][j] === SUPER_LIFE) neighborsCount++
-        }
-    }
-    return neighborsCount
-}
-
 // show cell's negs:
 function expandShown(board, posI, posJ) {
     for (var i = posI - 1; i <= posI + 1; i++) {
@@ -159,7 +173,6 @@ function expandShown(board, posI, posJ) {
         }
     }
 }
-
 
 // shows all mines in red when player lost the game 
 function revelAllMines() {
@@ -205,15 +218,4 @@ function gameOver() {
     gGame.isOn = false;
     isFirstClick = true;
     clearInterval(gTimerInterval);
-}
-
-function addStyleForNums(elCell, i, j) {
-    if (gBoard[i][j].negsMinesCount === 1) elCell.classList.add('one');
-    if (gBoard[i][j].negsMinesCount === 2) elCell.classList.add('two');
-    if (gBoard[i][j].negsMinesCount === 3) elCell.classList.add('three');
-    if (gBoard[i][j].negsMinesCount === 4) elCell.classList.add('four');
-    if (gBoard[i][j].negsMinesCount === 5) elCell.classList.add('five');
-    if (gBoard[i][j].negsMinesCount === 6) elCell.classList.add('six');
-    if (gBoard[i][j].negsMinesCount === 7) elCell.classList.add('seven');
-    if (gBoard[i][j].negsMinesCount === 8) elCell.classList.add('eight');
 }
