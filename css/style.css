@@ -2,6 +2,7 @@ body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     background-color: lightgray;
 }
+
 button {
     padding: 5px;
     background-color: rgb(146, 146, 146);
@@ -17,7 +18,8 @@ button {
 .table {
     margin-left: auto;
     margin-right: auto;
-
+    background-color: rgb(190, 190, 190);
+    
 }
 
 .clock {
@@ -35,5 +37,48 @@ button {
 
 .hint {
     background-color: rgb(149, 255, 149);
+}
 
+.open {
+    background-color: rgb(245, 241, 241);
+}
+
+.one {
+    color: blue;
+    font-weight: bold;
+}
+
+.two {
+    color: green;
+    font-weight: bold;
+}
+
+.three {
+    color: green;
+    font-weight: bold;
+}
+
+.four {
+    color: purple;
+    font-weight: bold;
+}
+
+.five {
+    color: maroon;
+    font-weight: bold;
+}
+
+.six {
+    color: turquoise;
+    font-weight: bold;
+}
+
+.seven {
+    color: black;
+    font-weight: bold;
+}
+
+.eight {
+    color: gray;
+    font-weight: bold;
 }

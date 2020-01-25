@@ -2,7 +2,7 @@
 function cellClicked(elCell, i, j) {
     // on first click - set random mines:
     if (!gGame.isOn) return;
-    if (gClicksCount === 0) startGame();
+    if (isFirstClick) startGame();
     if (elCell.innerText === FLAG) return;
     // on hint mode:
     if (isHintOn) {
@@ -16,9 +16,14 @@ function cellClicked(elCell, i, j) {
     }
     if (gBoard[i][j].isShown) return;
     gBoard[i][j].isShown = true;
-    if (!gBoard[i][j].isMine) gGame.shownCount++;
+    if (!gBoard[i][j].isMine) {
+        gGame.shownCount++;
+        elCell.classList.add('open');
+    }
     var cellValue = gBoard[i][j].negsMinesCount;
-    elCell.innerHTML = cellValue;
+    addStyleForNums(elCell, i, j);
+    
+    (cellValue === 0) ? elCell.innerHTML = EMPTY : elCell.innerHTML = cellValue;
     if (gBoard[i][j].negsMinesCount < 1) expandShown(gBoard, i, j);
     renderCell(i, j, cellValue);
     checkWin();
@@ -115,11 +120,15 @@ function expandShown(board, posI, posJ) {
             board[i][j].isShown = true;
             var negCellSelector = getSelector(i, j);
             var elNegCell = document.querySelector(negCellSelector);
+            addStyleForNums(elNegCell, i, j);
             elNegCell.innerText = board[i][j].negsMinesCount;
+            elNegCell.classList.add('open');
             gGame.shownCount++;
+            if (board[i][j].negsMinesCount === EMPTY) expandShown(board, i, j);
         }
     }
 }
+
 
 // shows all mines in red when player lost the game 
 function revelAllMines() {
@@ -163,7 +172,17 @@ if (document.addEventListener) {
 
 function gameOver() {
     gGame.isOn = false;
-    gClicksCount = 0;
+    isFirstClick = true;
     clearInterval(gTimerInterval);
 }
 
+function addStyleForNums(elCell, i, j) {
+    if (gBoard[i][j].negsMinesCount === 1) elCell.classList.add('one');
+    if (gBoard[i][j].negsMinesCount === 2) elCell.classList.add('two');
+    if (gBoard[i][j].negsMinesCount === 3) elCell.classList.add('three');
+    if (gBoard[i][j].negsMinesCount === 4) elCell.classList.add('four');
+    if (gBoard[i][j].negsMinesCount === 5) elCell.classList.add('five');
+    if (gBoard[i][j].negsMinesCount === 6) elCell.classList.add('six');
+    if (gBoard[i][j].negsMinesCount === 7) elCell.classList.add('seven');
+    if (gBoard[i][j].negsMinesCount === 8) elCell.classList.add('eight');
+}
