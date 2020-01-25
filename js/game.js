@@ -12,10 +12,10 @@ function cellClicked(elCell, i, j) {
     if (gBoard[i][j].isMine && !isHintOn) {
         // hit mine and has lives
         if (gLivesCount > 1) {
-            gLivesCount--;
             showMineHit(elCell);
             return;
         } else {
+            gLivesCount--;
             getSmileyBtn(SMILEY_LOSE);
             revelAllMines();
             gameOver();
@@ -28,7 +28,7 @@ function cellClicked(elCell, i, j) {
         elCell.classList.add('open');
     }
     var cellValue = gBoard[i][j].negsMinesCount;
-    var valueForSwitch = gBoard[i][j].negsMinesCount;
+    // var valueForSwitch = gBoard[i][j].negsMinesCount;
     addStyleForNums(elCell, i, j);
 
     (cellValue === 0) ? elCell.innerHTML = EMPTY : elCell.innerHTML = cellValue;
@@ -39,6 +39,7 @@ function cellClicked(elCell, i, j) {
 
 // when clicked mine and still has lives
 function showMineHit(elCell) {
+    gLivesCount--;
     elCell.innerText = MINE;
     elCell.classList.add('mark');
     elLivesIconUpdate();
@@ -49,6 +50,7 @@ function showMineHit(elCell) {
 }
 
 function elLivesIconUpdate() {
+    elStr = '';
     var elLives = document.querySelector('p span');
     var elStr = ''
     for (var i = gLivesCount; i > 0; i--) {
@@ -58,7 +60,7 @@ function elLivesIconUpdate() {
 }
 
 // showing random cell that is safe to open:
-function safeClick(elBtn) {
+function safeClick() {
     if (gSafeClicksCount === 0) return;
     var iIdx = getRandomInt(0, gBoard.length);
     var jIdx = getRandomInt(0, gBoard.length);
