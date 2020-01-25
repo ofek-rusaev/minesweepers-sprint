@@ -10,9 +10,16 @@ function cellClicked(elCell, i, j) {
         return;
     }
     if (gBoard[i][j].isMine && !isHintOn) {
-        getSmileyBtn(SMILEY_LOSE);
-        revelAllMines();
-        gameOver();
+        // hit mine and has lives
+        if (gLivesCount > 1) {
+            gLivesCount--;
+            showMineHit(elCell);
+            return;
+        } else {
+            getSmileyBtn(SMILEY_LOSE);
+            revelAllMines();
+            gameOver();
+        }
     }
     if (gBoard[i][j].isShown) return;
     gBoard[i][j].isShown = true;
@@ -22,20 +29,44 @@ function cellClicked(elCell, i, j) {
     }
     var cellValue = gBoard[i][j].negsMinesCount;
     addStyleForNums(elCell, i, j);
-    
+
     (cellValue === 0) ? elCell.innerHTML = EMPTY : elCell.innerHTML = cellValue;
     if (gBoard[i][j].negsMinesCount < 1) expandShown(gBoard, i, j);
     renderCell(i, j, cellValue);
     checkWin();
 }
 
+// when clicked mine and still has lives
+function showMineHit(elCell) {
+    elCell.innerText = MINE;
+    elCell.classList.add('mark');
+    elLivesIconUpdate();
+    setTimeout(function () {
+        elCell.innerText = EMPTY;
+        elCell.classList.remove('mark');
+    }, 1000);
+}
+
+function elLivesIconUpdate() {
+    var elLives = document.querySelector('p span');
+    var elStr = ''
+    for (var i = gLivesCount; i > 0 ; i--) {
+        elStr += '❤';
+    }
+    elLives.innerText = elStr;
+}
+
 // on "hint" click:
 function setHintOn() {
     if (gHintsCount === 0) return;
     isHintOn = true;
-    var elContainer = document.querySelector('.board');
     gHintsCount--;
+    elHintsBtnUpdate();
+    var elContainer = document.querySelector('.board');
     elContainer.classList.add('hint');
+}
+
+function elHintsBtnUpdate() {
     document.querySelector('button span').innerText = gHintsCount;
 }
 

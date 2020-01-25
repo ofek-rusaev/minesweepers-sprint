@@ -20,12 +20,17 @@ var gTimerInterval;
 
 var isFirstClick = true; // recognizes first click and starts game. TO DO : change to boolan value
 var gHintsCount = 3;
+var gLivesCount = 3;
 var isHintOn = false;
 
 function init() {
     gGame.isOn = true;
     gGame.shownCount = 0;
     gGame.markedCount = 0;
+    gLivesCount = 3;
+    elLivesIconUpdate();
+    gHintsCount = 3;
+    elHintsBtnUpdate();
     gBoard = createBoard();
     renderBoard();
 
